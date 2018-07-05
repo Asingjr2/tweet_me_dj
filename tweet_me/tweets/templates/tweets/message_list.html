@@ -1,0 +1,37 @@
+{% extends 'layout.html' %}
+{% block body %}
+      <p> message list</p>
+      <section class="jumbotron">
+                  <h1>ALL TASKS</h1>
+              <table class="table table-hover">
+                  <thead>
+                      <tr>
+                          <th>#</th>
+                          <th>TEXT</th>
+                          <th>TIME SINCE CREATED</th>
+                          <th>REMOVE</th>
+                      </tr>
+                  </thead>
+                  <tbody>
+                      {% for obj in object_list %}
+                      <tr>
+                          <td>
+                              {{ forloop.counter }}
+                          </td>
+                          <td><a href="{{ obj.get_absolute_url }}"> {{ obj.text }}</a> 
+                          </td>
+                          <td> {{ obj.created_at |timesince}}</td>
+                          <td>
+                              <form action="{% url 'delete' obj.id %}">
+                                  <button class="btn btn-danger">
+                                      DELETE</button>
+                                  </form>
+                              </td>
+                          </tr>
+                          {% empty %}
+                          <h4>No Tasks Yet</h4>
+                  </tbody>
+                  {% endfor %}
+              </table>
+          </section>
+{% endblock %}

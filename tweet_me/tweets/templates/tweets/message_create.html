@@ -1,0 +1,22 @@
+{% extends 'layout.html' %}
+{% block body %}
+<section>
+    {% if messages %}
+    <div class="alet alert-success alert-dismissable">
+    {% for message in messages %} 
+    <p>{{ message }}</p>
+    {% endfor %} 
+    </div> 
+    {% endif %}
+    <div class="container">
+            <div class="jumbotron">
+                <form action="{% url 'create' %}" method="post">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <small class="form-text text-muted">Entry must contain "django"</small>
+                    <input type="submit" class="btn btn-success" value="SUBMIT MESSAGE">
+                </form>
+            </div>
+        </div>
+</section>
+{% endblock %}

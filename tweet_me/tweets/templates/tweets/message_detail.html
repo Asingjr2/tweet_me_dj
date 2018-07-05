@@ -1,0 +1,5 @@
+{% extends 'layout.html' %}
+{% block body %}
+     <p>message {{ object.text }}</p>
+     <p>{{ object.created_at | timesince }}</p>
+{% endblock %}
