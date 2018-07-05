@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
-from django.contrib.auth import authenticate
+from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.urls import reverse_lazy
 from django.views import View
@@ -8,14 +8,13 @@ from django.views.generic import TemplateView
 from django.views.generic.detail import DetailView
 from django.views.generic.list import ListView
 from django.views.generic.edit import UpdateView, CreateView, DeleteView
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 from .models import Message
-from .forms import MessageForm
-
-# Create your views here.
+from .forms import MessageForm, RegisterForm, LoginForm
 
 
-class HomeView(TemplateView):
+class HomeView(LoginRequiredMixin, TemplateView):
     template_name = "tweets/home.html"
 
 
@@ -24,7 +23,7 @@ class DetailMessageView(DetailView):
     template_name = "tweet/message_detail.html"
 
 
-class CreateMessageView(CreateView): 
+class CreateMessageView(LoginRequiredMixin, CreateView): 
     model = Message
     form_class = MessageForm
     success_url = "/home"
@@ -49,7 +48,7 @@ class UpdateMessageView(UpdateView):
     template_name_suffix = "_update"
 
 
-class ListMessageView(ListView):
+class ListMessageView(LoginRequiredMixin,ListView):
     model = Message
     
     def get_context_data(self, **kwargs):
@@ -58,12 +57,65 @@ class ListMessageView(ListView):
         return context
 
 
-class DeleteMessageView(DeleteView):
+class DeleteMessageView(LoginRequiredMixin,DeleteView):
     model = Message 
     success_url = reverse_lazy("home")
 
+class RegisterView(View):
+    form_class = RegisterForm
+    template_name = "tweets/reg.html"
 
-def logout(request):
+    def get(self, request):
+        form = RegisterForm()
+        return render(request, self.template_name, {"form":form})
+
+    def post(self, request):
+        """ Overriding base post method to encrpyt user password and validate registration from data"""
+        form = self.form_class(request.POST)
+        if form.is_valid():
+            user = form.save(commit = False)
+            username = form.cleaned_data["username"]
+            password = form.cleaned_data["password"]
+            user.set_password(password)
+            user.save()
+            return redirect("/login")
+        else:
+            if 'username' in form.errors:
+                messages.warning(request, 'Username does not meet requirements.  Please try again.')
+            if 'password' in form.errors:
+                messages.warning(request, 'Passwrod does not meet requirements.  Please try again.')
+            return redirect("/")
+
+
+class LoginView(View):
+    form_class = LoginForm
+    template_name = "tweets/log.html"
+
+    def get(self, request):
+        form = LoginForm()
+        return render(request, self.template_name, {"form":form})
+    
+    def post(self, request):
+        form = LoginForm()
+        submitted_form = self.form_class(request.POST)
+        if submitted_form.is_valid():
+            try: 
+                username = submitted_form.cleaned_data["username"]
+                password = submitted_form.cleaned_data["password"]
+                user = authenticate(username = username, password = password)
+                if user is not None:
+                    login(request, user)
+                    return redirect("/home")
+                else:
+                    messages.warning(request, 'Username or password does not match our records')
+                    return redirect("/login")
+            except: 
+                messages.warning(request, 'Username or password does not match our records')
+                return render(request, self.template_name, {"form":form})
+            
+
+
+def logout_view(request):
     """ Clear session data. """
     logout(request)
     return redirect("/home")

@@ -7,12 +7,19 @@ from .views import (
     CreateMessageView, 
     UpdateMessageView, 
     DeleteMessageView, 
-    ListMessageView
+    ListMessageView, 
+    RegisterView, 
+    LoginView, 
 )
 
 
 urlpatterns = [
-    # Base Message Views
+
+    path("", RegisterView.as_view(), name="register"),
+    path("login", LoginView.as_view(), name="login"),
+    path("logout", views.logout_view, name="logout"),
+
+    # Base Message CRUD Views
     path("home", HomeView.as_view(), name="home"),
     path("create", CreateMessageView.as_view(), name="create"), 
     path("detail/<uuid:pk>", DetailMessageView.as_view(), name="detail"),

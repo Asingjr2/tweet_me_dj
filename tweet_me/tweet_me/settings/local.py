@@ -136,3 +136,5 @@ STATICFILES_DIRS = [
 
 # Defining location of static files which may change in production
 STATIC_ROOT= os.path.join(os.path.dirname(BASE_DIR), "static--serve")
+
+LOGIN_URL="login"
