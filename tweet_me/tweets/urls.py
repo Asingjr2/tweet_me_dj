@@ -12,7 +12,6 @@ from .views import (
     LoginView, 
 )
 
-
 urlpatterns = [
 
     path("", RegisterView.as_view(), name="register"),
@@ -23,7 +22,7 @@ urlpatterns = [
     path("home", HomeView.as_view(), name="home"),
     path("create", CreateMessageView.as_view(), name="create"), 
     path("detail/<uuid:pk>", DetailMessageView.as_view(), name="detail"),
-    path("update", UpdateMessageView.as_view(), name="update"),
-    path("delete/<uuid:id>", DeleteMessageView.as_view(), name="delete"),
+    path("update/<uuid:pk>", UpdateMessageView.as_view(), name="update"),
+    path("delete/<uuid:pk>", DeleteMessageView.as_view(), name="delete"),
     path("list", ListMessageView.as_view(), name="list")
 ]

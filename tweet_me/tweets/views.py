@@ -9,9 +9,13 @@ from django.views.generic.detail import DetailView
 from django.views.generic.list import ListView
 from django.views.generic.edit import UpdateView, CreateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.forms.utils import ErrorList
+from django import forms
+
 
 from .models import Message
 from .forms import MessageForm, RegisterForm, LoginForm
+from .mixins import UserNeededMixin
 
 
 class HomeView(LoginRequiredMixin, TemplateView):
@@ -20,7 +24,7 @@ class HomeView(LoginRequiredMixin, TemplateView):
 
 class DetailMessageView(DetailView):
     model = Message
-    template_name = "tweet/message_detail.html"
+    template_name = "tweets/message_detail.html"
 
 
 class CreateMessageView(LoginRequiredMixin, CreateView): 
@@ -32,34 +36,48 @@ class CreateMessageView(LoginRequiredMixin, CreateView):
     def form_valid(self, form):
         print("form looks good")
         form.instance.creator = self.request.user
-        self.object = form.save()
-        return redirect("/home")
+        return super(CreateMessageView, self).form_valid(form)
+        # Above method saves form and redirects same as below but with less code
+        # self.object = form.save()
+        # return redirect("/home")
 
     def form_invalid(self, form):
         # Specific logic for invalid form entry plus setting message error
-        print("something went wrong", form.errors) 
+        print("something went wrong", form.non_field_errors) 
         if "text" in form.errors:
             messages.warning(self.request, 'Message must contain word "django" and be less than 100 characters')
+        if form.errors:
+            messages.warning(self.request, 'errors')
         return redirect("/create")
 
 
+# Created custom mixin to allow view if user is not authenticated
+# Creating update and retrieve view to see and then send changes
 class UpdateMessageView(UpdateView):
     model = Message
-    template_name_suffix = "_update"
+    form_class = MessageForm
+    success_url = "/home"
+    template_name = "tweets/message_update.html"
 
 
 class ListMessageView(LoginRequiredMixin,ListView):
     model = Message
+    # queryset = Message.objects.filter(creator__id = user.id)
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["all_messages"] = Message.objects.all()
         return context
 
+    def get_queryset(self):
+        return Message.objects.filter(creator__id = str(self.request.user.id))
+
 
 class DeleteMessageView(LoginRequiredMixin,DeleteView):
     model = Message 
     success_url = reverse_lazy("home")
+    template_name_suffix = "_delete"
+
 
 class RegisterView(View):
     form_class = RegisterForm
