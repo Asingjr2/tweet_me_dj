@@ -24,5 +24,5 @@ urlpatterns = [
     path("detail/<uuid:pk>", DetailMessageView.as_view(), name="detail"),
     path("update/<uuid:pk>", UpdateMessageView.as_view(), name="update"),
     path("delete/<uuid:pk>", DeleteMessageView.as_view(), name="delete"),
-    path("list", ListMessageView.as_view(), name="list")
+    path("list", ListMessageView.as_view(), name="list"),
 ]

@@ -9,9 +9,6 @@ from django.views.generic.detail import DetailView
 from django.views.generic.list import ListView
 from django.views.generic.edit import UpdateView, CreateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.forms.utils import ErrorList
-from django import forms
-
 
 from .models import Message
 from .forms import MessageForm, RegisterForm, LoginForm
@@ -53,24 +50,25 @@ class CreateMessageView(LoginRequiredMixin, CreateView):
 
 # Created custom mixin to allow view if user is not authenticated
 # Creating update and retrieve view to see and then send changes
-class UpdateMessageView(UpdateView):
+class UpdateMessageView(LoginRequiredMixin, UpdateView):
     model = Message
     form_class = MessageForm
     success_url = "/home"
     template_name = "tweets/message_update.html"
 
 
-class ListMessageView(LoginRequiredMixin,ListView):
+class ListMessageView(LoginRequiredMixin, ListView):
     model = Message
-    # queryset = Message.objects.filter(creator__id = user.id)
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["all_messages"] = Message.objects.all()
         return context
 
+    # Filtering page set for against user
     def get_queryset(self):
-        return Message.objects.filter(creator__id = str(self.request.user.id))
+        q_set = Message.objects.all()
+        return q_set.filter(creator__id = str(self.request.user.id))
 
 
 class DeleteMessageView(LoginRequiredMixin,DeleteView):
@@ -100,8 +98,6 @@ class RegisterView(View):
         else:
             if 'username' in form.errors:
                 messages.warning(request, 'Username does not meet requirements.  Please try again.')
-            if 'password' in form.errors:
-                messages.warning(request, 'Passwrod does not meet requirements.  Please try again.')
             return redirect("/")
 
 
