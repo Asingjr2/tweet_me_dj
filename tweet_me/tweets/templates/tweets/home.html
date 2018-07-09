@@ -1,26 +1,44 @@
 {% extends 'layout.html' %}
+
+<!-- {% load staticfiles %} -->
 {% block body %}
-    <p>LETS DO THIS</p>
-    <a href="/logout">LOGOUT</a>
 
     {% block script %}  
-    
-        <script>
-            $(document).ready(function(){
-                // console.log("working");
+    <script>
+        $(document).ready(function(){
+        console.log("working");
 
-                $.ajax({
-                    url:"/home",
-                    method: "GET", 
-                    success: function(data){
-                        console.log(data)}, 
-                    error: function(data) {
-                        console.log("error")
-                        console.log(data)
-                    }});
+        $.ajax({
+            url: "/api/tweets/all_messages",
+            method: "GET", 
+            success: function(data){
+                // console.log(data)},
+                $.each(data, function(key, value){
+                    console.log(key)
+                    console.log(value.text)
+                    console.log(value.creator)
+                    var tweetKey = key
+                    var tweetContent = value.text
+                    var tweetUser = value.creator
+                    $(".tweet-container").append(
+                        "<li>" + tweetContent + "</li>"
+                    )
+                })
+            },
+            error: function(data) {
+                console.log("error")
+                    console.log(data)
+            }
+                    });
             })
-        </script>
-
+    </script>
     {% endblock script %}
+</head>
+    <p>LETS DO THIS</p>
+    <a href="/logout">LOGOUT</a>
+    <div class="tweet-container">
+
+    </div>
+
 
 {% endblock %}
