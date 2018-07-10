@@ -8,7 +8,7 @@
         <div>
             <form id="{{ searchFormID }}" action="/home" method="GET">
                     <!-- Input value to show last search item -->
-                    <input type="text" name="q_set" placeholder="search tweets">
+                    <input type="text" name="q_set" placeholder="search tweets" value="{{ request.GET.q_set }}">
                     <input type="submit" class="btn btn-primary">
                 </form>
         </div>
@@ -18,27 +18,28 @@
     {% block script %}  
     <script>
 
-        // function getParameterByName(name, url) {
-        //     if (!url) url = window.location.href;
-        //     name = name.replace(/[\[\]]/g, '\\$&');
-        //     var regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
-        //         results = regex.exec(url);
-        //     if (!results) return null;
-        //     if (!results[2]) return '';
-        //     return decodeURIComponent(results[2].replace(/\+/g, ' '));
+        function getParameterByName(name, url) {
+            if (!url) url = window.location.href;
+            name = name.replace(/[\[\]]/g, '\\$&');
+            var regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
+                results = regex.exec(url);
+            if (!results) return null;
+            if (!results[2]) return '';
+            return decodeURIComponent(results[2].replace(/\+/g, ' '));
+        }
 
         $(document).ready(function(){
         console.log("working");
 
-        // var query = getParameterByName('q')
-        // console.log("query submitted", query)
+        var query = getParameterByName('q_set')
+        console.log("query submitted", query)
 
         $.ajax({
             url: "/api/tweets/all_messages/",
-            // data: { "q": query },
+            data: { "q": query },
             method: "GET", 
             success: function(data){
-                // console.log(data)},
+                console.log(data),
                 $.each(data, function(key, value){
                     console.log(key)
                     console.log(value.text)
@@ -53,11 +54,13 @@
             },
             error: function(data) {
                 console.log("error")
-                    console.log(data)
+                console.log(data)
             }
                     });
             })
-        // }
     </script>
     {% endblock script %}
 {% endblock %}
+
+
+<!-- FILTERING FOR HOME NOT YET WORKING -->
