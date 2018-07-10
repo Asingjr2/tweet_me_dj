@@ -41,7 +41,7 @@
                                     <a class="nav-link" href="{% url 'logout' %}">Logout</a><br>
                                 </li>
                                 <li>
-                                    {% include "tweets/search.html" %}
+                                    {% include "tweets/search.html" with address="/list" %}
                                 </li>
                               </ul>
                             </div>

@@ -69,15 +69,14 @@ class ListMessageView(ListView):
         """
             Modifying queryset to pull any url parameters and then filter against current user messages only
         """
-        qs = Message.objects.all()
-        print(self.request.GET)
+        q_set = Message.objects.all()
         query = self.request.GET.get('q', None)
         if query is not None: 
-            qs = qs.filter(
+            q_set = q_set.filter(
                 Q(text__icontains = query) |
                 Q(creator__username__icontains = query)
             )
-        return qs.filter(creator__id = str(self.request.user.id))
+        return q_set.filter(creator__id = str(self.request.user.id))
     
 
 class DeleteMessageView(LoginRequiredMixin,DeleteView):
