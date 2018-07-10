@@ -38,7 +38,10 @@
                                   <a class="nav-link" href="{% url 'list' %}">All Messages</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" href="{% url 'logout' %}">Logout</a>
+                                    <a class="nav-link" href="{% url 'logout' %}">Logout</a><br>
+                                </li>
+                                <li>
+                                    {% include "tweets/search.html" %}
                                 </li>
                               </ul>
                             </div>

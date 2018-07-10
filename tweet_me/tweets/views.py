@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
+from django.db.models import Q
 from django.contrib import messages
 from django.urls import reverse_lazy
 from django.views import View
@@ -39,7 +40,7 @@ class CreateMessageView(LoginRequiredMixin, CreateView):
         # return redirect("/home")
 
     def form_invalid(self, form):
-        # Specific logic for invalid form entry plus setting message error
+        """  Modifying built in function for invalid form entry plus setting message error. """
         print("something went wrong", form.non_field_errors) 
         if "text" in form.errors:
             messages.warning(self.request, 'Message must contain word "django" and be less than 100 characters')
@@ -48,8 +49,7 @@ class CreateMessageView(LoginRequiredMixin, CreateView):
         return redirect("/create")
 
 
-# Created custom mixin to allow view if user is not authenticated
-# Creating update and retrieve view to see and then send changes
+# Url returns data in same form as create and populates with tweet info
 class UpdateMessageView(LoginRequiredMixin, UpdateView):
     model = Message
     form_class = MessageForm
@@ -57,7 +57,7 @@ class UpdateMessageView(LoginRequiredMixin, UpdateView):
     template_name = "tweets/message_update.html"
 
 
-class ListMessageView(LoginRequiredMixin, ListView):
+class ListMessageView(ListView):
     model = Message
     
     def get_context_data(self, **kwargs):
@@ -65,11 +65,20 @@ class ListMessageView(LoginRequiredMixin, ListView):
         context["all_messages"] = Message.objects.all()
         return context
 
-    # Filtering page set for against user
-    def get_queryset(self):
-        q_set = Message.objects.all()
-        return q_set.filter(creator__id = str(self.request.user.id))
-
+    def get_queryset(self, *args, **kwargs):
+        """
+            Modifying queryset to pull any url parameters and then filter against current user messages only
+        """
+        qs = Message.objects.all()
+        print(self.request.GET)
+        query = self.request.GET.get('q', None)
+        if query is not None: 
+            qs = qs.filter(
+                Q(text__icontains = query) |
+                Q(creator__username__icontains = query)
+            )
+        return qs.filter(creator__id = str(self.request.user.id))
+    
 
 class DeleteMessageView(LoginRequiredMixin,DeleteView):
     model = Message 
@@ -127,7 +136,6 @@ class LoginView(View):
                 messages.warning(request, 'Username or password does not match our records')
                 return render(request, self.template_name, {"form":form})
             
-
 
 def logout_view(request):
     """ Clear session data. """

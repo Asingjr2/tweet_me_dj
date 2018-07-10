@@ -1,15 +1,32 @@
 {% extends 'layout.html' %}
 
-<!-- {% load staticfiles %} -->
 {% block body %}
+    <p>LETS DO THIS</p>
+    <a href="/logout">LOGOUT</a>
+    <div class="tweet-container">
 
+    </div>
+    
     {% block script %}  
     <script>
+
+        function getParameterByName(name, url) {
+            if (!url) url = window.location.href;
+            name = name.replace(/[\[\]]/g, '\\$&');
+            var regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
+                results = regex.exec(url);
+            if (!results) return null;
+            if (!results[2]) return '';
+            return decodeURIComponent(results[2].replace(/\+/g, ' '));
+
         $(document).ready(function(){
         console.log("working");
 
+        var query = getParameterByName('q')
+        console.log("query submitted", query)
+
         $.ajax({
-            url: "/api/tweets/all_messages",
+            url: "/api/tweets/all_messages/?q=somequery",
             method: "GET", 
             success: function(data){
                 // console.log(data)},
@@ -31,14 +48,7 @@
             }
                     });
             })
+        }
     </script>
     {% endblock script %}
-</head>
-    <p>LETS DO THIS</p>
-    <a href="/logout">LOGOUT</a>
-    <div class="tweet-container">
-
-    </div>
-
-
 {% endblock %}
