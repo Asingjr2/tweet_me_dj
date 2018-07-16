@@ -19,6 +19,11 @@ from .mixins import UserNeededMixin
 class HomeView(LoginRequiredMixin, TemplateView):
     template_name = "tweets/home.html"
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["create_form"] = MessageForm()
+        return context 
+
 
 class DetailMessageView(DetailView):
     model = Message
