@@ -3,6 +3,6 @@
 {% block body %}
 
     <!-- Can extend a form type and pass variable into template.  Great for reusable forms or templates -->
-    {% include "tweets/form.html" with form=form btn_title="UPDATE" %}
+    {% include "tweets/form.html" with address=address="/create"  form=form btn_title="UPDATE" %}
 
 {% endblock %}

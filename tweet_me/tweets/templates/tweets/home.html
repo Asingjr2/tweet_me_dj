@@ -17,7 +17,7 @@
             </div>
             <div class="col">
                 <!-- Using template engine to load reusable form and specitying tempalte variables -->
-                {% include "tweets/form.html" with form=create_form btn_title="CREATE" %}
+                {% include "tweets/form.html" with address="/api/tweet/create" form=create_form btn_title="CREATE" id="tweet-form" %}
             </div>
         </div>
             
@@ -41,12 +41,9 @@
             return decodeURIComponent(results[2].replace(/\+/g, ' '));
         }
 
-        // Function to update html with update information if tweets search returns results
+        // Function to update html with updated information if tweets search returns results
         function parseTweets(){
             $.each(tweetList, function(key, value){
-                console.log(key)
-                console.log(value.text)
-                console.log(value.creator)
                 var tweetKey = key
                 var tweetContent = value.text
                 var tweetUser = value.creator
@@ -56,15 +53,15 @@
             })
         }
 
-        // Ajax function checking for length of search result and displaying tweet or "no results message"
+        // Ajax function checking for length of search result and displaying tweet or "no results message"...then calling function
+        function getTweets() {
         $.ajax({
             url: "/api/tweets/all_messages/",
             data: { "q": query },
             method: "GET", 
             success: function(data){
                 tweetList = data
-                console.log("data results"),
-                console.log(data.length);
+                // Logic to update html with "no results message"
                 if(data.length < 1){
                     $(".tweet-container").html(
                         "<div class='jumbotron'"+
@@ -78,7 +75,34 @@
                 console.log("error in search", data)
             }
                     });
-            })
+        }
+        getTweets()
+
+
+        $("#tweet-form").submit(function(event){
+            event.preventDefault()
+            var _this = $(this)
+            var createFormData = _this.serialize()
+            console.log(event)
+            console.log(_this)
+
+            $.ajax({
+            url: "/api/tweets/create/",
+            data: createFormData,
+            method: "POST", 
+            success: function(data){
+                console.log("create try data", data)
+                // getTweets()
+
+                // tweetList = data
+                // Logic to update html with "no results message"
+            },
+            error: function(data) {
+                console.log("error in creation of tweet", data)
+            }
+                    });
+        })
+    })
     </script>
     {% endblock script %}
 {% endblock %}
