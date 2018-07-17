@@ -17,6 +17,8 @@ from .mixins import UserNeededMixin
 
 
 class HomeView(LoginRequiredMixin, TemplateView):
+    # template_name = "tweets/home2.html"
+    # My template version
     template_name = "tweets/home.html"
 
     def get_context_data(self, **kwargs):

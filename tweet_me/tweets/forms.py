@@ -6,7 +6,11 @@ from .models import Message
 
 
 class MessageForm(ModelForm):
-    # Creating form that leaves out creator.  Creator set in view logic 
+    """
+    Creating form that leaves out creator.  
+    Creator set in view logic.
+    Max length for textarea set in attribute.
+    """
     class Meta:
         model = Message
         fields = ["text",]
@@ -14,7 +18,8 @@ class MessageForm(ModelForm):
             "text": forms.Textarea(attrs = {
                 "class": "form-control",
                 "label": "",
-                "placeholder": "Add new message"
+                "placeholder": "Add new message", 
+                "maxLength":"140", 
             }), 
         }
 

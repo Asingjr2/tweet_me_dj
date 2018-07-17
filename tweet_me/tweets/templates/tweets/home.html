@@ -1,4 +1,5 @@
 {% extends 'layout.html' %}
+{% load staticfiles %}
 
 {% block body %}
     <p>LETS DO THIS</p>
@@ -8,7 +9,7 @@
             <div class="col-sm-6">
                 <h2>SEARCH FORM</h2>
                 <div>
-                    <form id="{{ searchFormID }}" action="/home" method="GET">
+                    <form action="/home" method="GET">
                         <!-- Input value to show last search item -->
                         <input type="text" name="q_set" placeholder="search tweets" value="{{ request.GET.q_set }}">
                         <input type="submit" class="btn btn-primary">
@@ -16,96 +17,24 @@
                 </div>
             </div>
             <div class="col">
-                <!-- Using template engine to load reusable form and specitying tempalte variables -->
-                {% include "tweets/form.html" with address="/api/tweet/create" form=create_form btn_title="CREATE" id="tweet-form" %}
+              <div class="jumbotron">
+                  <!-- Ajax method to send form attached to tweet-form (tweets/jquery.js)-->
+                  <form id="tweet-form" action="" method="post">
+                    {% csrf_token %}
+                    {{ create_form.as_p }}
+                    <small class="form-text text-muted">Entry must contain "django"</small>
+                    <input type="submit" class="btn btn-success" value="CREATE">
+                </form>
+                </div>
             </div>
         </div>
             
 
     </div>
     
+    {% endblock %}
     {% block script %}  
-    <script>
-        $(document).ready(function(){
-        // Function to get parameter for use with api_filter
-        var query = getParameterByName('q_set')
-        var tweetList = [];
-
-        function getParameterByName(name, url) {
-            if (!url) url = window.location.href;
-            name = name.replace(/[\[\]]/g, '\\$&');
-            var regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
-                results = regex.exec(url);
-            if (!results) return null;
-            if (!results[2]) return '';
-            return decodeURIComponent(results[2].replace(/\+/g, ' '));
-        }
-
-        // Function to update html with updated information if tweets search returns results
-        function parseTweets(){
-            $.each(tweetList, function(key, value){
-                var tweetKey = key
-                var tweetContent = value.text
-                var tweetUser = value.creator
-                $(".tweet-container").append(
-                    "<li>" + tweetContent + "</li>"
-                )
-            })
-        }
-
-        // Ajax function checking for length of search result and displaying tweet or "no results message"...then calling function
-        function getTweets() {
-        $.ajax({
-            url: "/api/tweets/all_messages/",
-            data: { "q": query },
-            method: "GET", 
-            success: function(data){
-                tweetList = data
-                // Logic to update html with "no results message"
-                if(data.length < 1){
-                    $(".tweet-container").html(
-                        "<div class='jumbotron'"+
-                        "<h1>" + "NO MATCHING TWEETS" + "</h1>"+"</div>"
-                    );
-                    return;
-                }
-                parseTweets()
-            },
-            error: function(data) {
-                console.log("error in search", data)
-            }
-                    });
-        }
-        getTweets()
-
-
-        $("#tweet-form").submit(function(event){
-            event.preventDefault()
-            var _this = $(this)
-            var createFormData = _this.serialize()
-            console.log(event)
-            console.log(_this)
-
-            $.ajax({
-            url: "/api/tweets/create/",
-            data: createFormData,
-            method: "POST", 
-            success: function(data){
-                console.log("create try data", data)
-                // getTweets()
-
-                // tweetList = data
-                // Logic to update html with "no results message"
-            },
-            error: function(data) {
-                console.log("error in creation of tweet", data)
-            }
-                    });
-        })
-    })
-    </script>
+        <script src="{% static 'tweets/jqueryHome.js' %}"></script>
     {% endblock script %}
-{% endblock %}
-
-
-<!-- FILTERING FOR HOME NOT YET WORKING -->
+    
+    
