@@ -35,7 +35,7 @@ class DetailMessageView(DetailView):
 class CreateMessageView(LoginRequiredMixin, CreateView): 
     model = Message
     form_class = MessageForm
-    success_url = "/home"
+    success_url = "home"
     template_name_suffix = "_create"
 
     def form_valid(self, form):
@@ -60,7 +60,7 @@ class CreateMessageView(LoginRequiredMixin, CreateView):
 class UpdateMessageView(LoginRequiredMixin, UpdateView):
     model = Message
     form_class = MessageForm
-    success_url = "/home"
+    success_url = "home"
     template_name = "tweets/message_update.html"
 
 

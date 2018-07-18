@@ -1,8 +1,5 @@
 {% extends 'layout.html' %}
 {% load staticfiles %}
-{% block script %}  
-    <script src="{% static 'tweets/jqueryHome.js' %}"></script>
-{% endblock script %}
 
 {% block body %}
     <p>LETS DO THIS</p>
@@ -21,7 +18,7 @@
             </div>
             <div class="col">
               <div class="jumbotron">
-                  <!-- Ajax method to send form attached to tweet-form (tweets/jquery.js)-->
+                  <!-- Ajax method to send form -->
                   <form id="tweet-form" action="" method="post">
                     {% csrf_token %}
                     {{ create_form.as_p }}
@@ -36,5 +33,10 @@
     </div>
     
     {% endblock %}
+    {% block script %}  
+    <script src="{% static 'tweets/jquery.js' %}">      
+    </script>
+    {% endblock script %}
     
     
+    <!-- FILTERING FOR HOME NOT YET WORKING -->

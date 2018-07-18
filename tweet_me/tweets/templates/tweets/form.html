@@ -1,0 +1,20 @@
+<section>
+    {% if messages %}
+    <div class="alet alert-success alert-dismissable">
+        {% for message in messages %} 
+        <p>{{ message }}</p>
+        {% endfor %} 
+    </div> 
+    {% endif %}
+    <!--  Creating form with mandatory(e.g. value) and optional elements (e.g.id) for use when called in other templates-->
+    <div class="container" {% if id %} id="{{ id }}" {% endif %}>
+        <div class="jumbotron">
+            <form action="{{ address }}" method="post">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <small class="form-text text-muted">Entry must contain "django"</small>
+                <input type="submit" class="btn btn-success" value="{{ btn_title }}">
+            </form>
+        </div>
+    </div>
+</section>
