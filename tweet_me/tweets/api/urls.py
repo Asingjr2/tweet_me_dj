@@ -5,6 +5,7 @@ from django.conf import settings
 
 from .views import MessageListAPIView, MessageCreateAPIView
 
+# All urls come after api/tweets
 urlpatterns = [
     path("all_messages/", MessageListAPIView.as_view(), name="all_messages"),
     path("create/", MessageCreateAPIView.as_view(), name="message_creation"),

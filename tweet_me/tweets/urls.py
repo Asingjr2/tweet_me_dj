@@ -13,7 +13,6 @@ from .views import (
 )
 
 urlpatterns = [
-
     path("", RegisterView.as_view(), name="register"),
     path("login", LoginView.as_view(), name="login"),
     path("logout", views.logout_view, name="logout"),
