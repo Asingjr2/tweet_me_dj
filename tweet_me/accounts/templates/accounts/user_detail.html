@@ -1,0 +1,47 @@
+{% extends 'layout.html' %}
+{% block body %}
+    <div class="row">
+        <div class="col-sm-3 col-xs-12">
+            <p>Username:  {{ object.username }}</p>
+            <p>{{ object.message_set.all}}</p>
+           
+            <hr>
+            <h4>
+                FOLLOWING: {{ object.profile.following.count }}
+                FOLLOWERS: {{ object.followed_by.count }}
+                <p>
+                    <a href="{% url 'accounts:follow' username=object.username %}">
+                        {% if following %} UNFOLLOW
+                    {% else %} FOLLOW 
+                    {% endif %}
+                </a>
+                </p>
+            </h4>
+        </div>
+
+        <div class="col-sm-9 col-xs-12">
+            <h3> FOLLOWING </h3>
+            <ul> {% for owner in object.profile.following.all %}
+                <li>
+                    <a href="{% url 'accounts:user_detail' owner.username %}">
+                        {{ owner }}</a>
+                </li>
+                    {% empty%}
+                    <h4>NOT FOLLOWING ANYONE</h4>
+                    {% endfor %}
+                </li>
+            </ul>
+            <h3> FOLLOWED BY </h3>
+            <ul> {% for profile in object.followed_by.all %}
+                <li> 
+                    <a href="{% url 'accounts:user_detail' profile.owner.username %}">
+                    {{ profile.owner.username }}</a> 
+                </li>
+                {% empty%}
+                    <h4>NOT FOLLOWED BY ANYONE</h4>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+    
+{% endblock %}
