@@ -17,6 +17,9 @@ class Message(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     creator = models.ForeignKey(User, on_delete = models.CASCADE, default=1)
 
+    class Meta:
+        ordering = ["-created_at",]
+
     def __str__(self):
         return "Text content is {}".format(self.text)
 

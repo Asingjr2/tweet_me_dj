@@ -68,6 +68,7 @@ $(document).ready(function(){
         var timesince = tweetValue.timesince
         var tweetContent = tweetValue.text
         var tweetUser = tweetValue.creator.username
+        var tweetUserUrl = "accounts/user_detail/" + tweetValue.creator.id + "/"
         var formattedHtml = "<li>" + tweetUser + " | " + timesince + " | " + " | " + dateDisplay + " | " + tweetContent + "</li>"
 
         if(preprend == true ){ 
