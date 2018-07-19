@@ -6,23 +6,23 @@ $(document).ready(function(){
     var tweetList = [];
     var startCharsCount = 140;
     var currentCharCount = 0;
+    var nextMessageSetUrl; 
 ;
     // Running method to get initial set of tweets from database
     getTweets()
 
     $("#tweet-form").append("<span id='chars_count'>CHARACTERS LEFT" +  startCharsCount + " </span>")
     
-    // Child input value of textarea with console log and display of changes
-    // Creating span that is updated when iser modifies form field
+    /*
+        Identifying form with child input value of textarea with console log and display of changes
+        Creating span that is updated when iser modifies form field
+    */
     $("#tweet-form textarea").keyup(function(e){
         var tweetValue = $(this).val()
         currentCharCount = startCharsCount - tweetValue.length
         var spanCharsCount = $("#chars_count")
         spanCharsCount.text("CHARACTERS LEFT " + currentCharCount)
 
-        // if(currentCharCount <= 0 ) {
-        //     spanCharsCount.text("Over 140 Limit.  Cannot submit message")
-        // }
     })
 
     $("#tweet-form").submit(function(event){
@@ -38,8 +38,7 @@ $(document).ready(function(){
         success: function(data){
             // Logic to clear specific field
             _this.find("input[type=text], textarea").val("")
-            addTweet(data)
-            // getTweets()
+            addTweet(data, true)
         },
         error: function(data) {
             console.log("error in creation of tweet", data)
@@ -64,32 +63,69 @@ $(document).ready(function(){
     }
 
     // Appends list of tweets to page.  Timesince, dateDisplay are serializer methods. Timesince also built in Django method.
-    function addTweet(tweetValue){
+    function addTweet(tweetValue, preprend){
         var dateDisplay = tweetValue.date_display
         var timesince = tweetValue.timesince
         var tweetContent = tweetValue.text
         var tweetUser = tweetValue.creator.username
-        $(".tweet-container").append(
-            "<li>" + tweetUser + " | " + timesince + " | " + " | " + dateDisplay + " | " + tweetContent + "</li>"
-        )
+        var formattedHtml = "<li>" + tweetUser + " | " + timesince + " | " + " | " + dateDisplay + " | " + tweetContent + "</li>"
+
+        if(preprend == true ){ 
+            $(".tweet-container").prepend(formattedHtml)
+        } else {
+            $(".tweet-container").append(formattedHtml)
+        }
+    
     }
 
-    // Ajax function checking for length of search result and displaying tweet or "no results message"...then calling function
-    function getTweets() {
+    /*
+        Ajax function getting tweets if they exist.  Creates std url using rest_framework pagination next and previus values.  If
+        url is not sent with  method call, base page is loaded.
+     */
+
+    function getTweets(url) {
         console.log("getting messages")
+        var fetchUrl;
+        
+        if(!url){
+            fetchUrl = "/api/tweets/all_messages/"
+        } else {
+            fetchUrl = url
+        }
+
         $.ajax({
-            url: "/api/tweets/all_messages/",
+            url: fetchUrl,
             data: { "q": query },
             method: "GET", 
+            /* 
+            Rest framework pagiantion names api value set as "results" so pull becomes data.results.  Restricts value per page
+            Additional attributes showing in rest framework api (count, next, previous, results )
+            */
             success: function(data){
-                tweetList = data
-                parseTweets(data)
+                tweetList = data.results
+                if(data.next){
+                    nextMessageSetUrl = data.next
+                } else {
+                    $("#moreMessages").css("display", "none")
+                }
+                parseTweets()
             },
             error: function(data) {
                 console.log("error in search", data)
             }
         });
     }
+
+    /*
+        Selector for pagination button to display more messages using var set in function based on rest framework.
+        If next url is null, button disappears.
+    */
+    $("#moreMessages").click(function(event){
+        event.preventDefault()
+        if(nextMessageSetUrl){
+            getTweets(nextMessageSetUrl)
+        }
+    })
 
 })
 

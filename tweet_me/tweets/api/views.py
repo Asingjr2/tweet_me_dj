@@ -5,6 +5,7 @@ from rest_framework.generics import CreateAPIView
 from rest_framework import permissions
 
 from .serializers import MessageSerializer
+from .pagination import StandardSetPagination
 from ..models import Message
 
 
@@ -19,6 +20,7 @@ class MessageCreateAPIView(CreateAPIView):
 
 class MessageListAPIView(generics.ListAPIView):
     serializer_class = MessageSerializer
+    pagination_class = StandardSetPagination
 
     # Replacing base get_queryset with search functionality
     # Not working the same as the full list

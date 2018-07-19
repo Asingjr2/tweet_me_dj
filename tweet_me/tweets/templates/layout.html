@@ -20,7 +20,8 @@
         <script>
             $(document).ready(function(){
                 var typingTimer;
-                var doneInterval = 500;
+                // Interval before acting to show items or redirect
+                var doneInterval = 700;
                 var searchInput = $("#top-nav-search input[type=text]")
                 var searchQuery;
 
@@ -40,6 +41,7 @@
                     if(searchQuery){
 
                         var url = "list/?q=" + searchQuery
+                        // Below works like redirect
                         document.location.href = url
                     }
                 }
