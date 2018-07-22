@@ -8,8 +8,18 @@ $(document).ready(function(){
     var currentCharCount = 0;
     var nextMessageSetUrl; 
 ;
-    // Running method to get initial set of tweets from database
+
+    // Running function to get initial set of tweets from database
     getTweets()
+
+    function updateHashLinks(){
+        $(".tweet-container").each(function(data){
+            var hashtagRegex = /(^|\s)#([\w\d-]+)/g
+            var newText = $(this).html().replace(hashtagRegex, "$1<a href='/tags/$2/'>#$2</a>" )
+            $(this).html(newText)
+        })
+    }
+
 
     $("#tweet-form").append("<span id='chars_count'>CHARACTERS LEFT" +  startCharsCount + " </span>")
     
@@ -110,6 +120,7 @@ $(document).ready(function(){
                     $("#moreMessages").css("display", "none")
                 }
                 parseTweets()
+                updateHashLinks()
             },
             error: function(data) {
                 console.log("error in search", data)
