@@ -15,7 +15,7 @@ class MessageSerializer(serializers.ModelSerializer):
     class Meta:
         model = Message
         fields = [
-            "text", "created_at", "updated_at", "creator", "timesince", "date_display"
+            "id", "text", "created_at", "updated_at", "creator", "timesince", "date_display"
         ]
     
     def get_date_display(self, obj):

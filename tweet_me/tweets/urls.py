@@ -11,6 +11,7 @@ from .views import (
     ListMessageView, 
     RegisterView, 
     LoginView, 
+    RetweetView,
 )
 
 urlpatterns = [
@@ -26,4 +27,5 @@ urlpatterns = [
     path("delete/<uuid:pk>", DeleteMessageView.as_view(), name="delete"),
     path("list/", ListMessageView.as_view(), name="list"),
     path("tags/<str:hashtag>/", HashTagView.as_view(), name="hashtag"),
+    path("retweet/<int:pk>/", RetweetView.as_view(), name="retweet"),
 ]

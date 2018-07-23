@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from django.db.models import Q
@@ -15,6 +15,14 @@ from .models import Message
 from .forms import MessageForm, RegisterForm, LoginForm
 from .mixins import UserNeededMixin
 
+
+class RetweetView(View):
+    def get(self, request, pk, *args, **kwargs):
+        message = get_object_or_404(Message, pk=pk)
+        if request.user.is_authenticated:
+            new_message = Message.objects.retweet(request.user, messge)
+            return redirect(new_message.get_absollute_url())
+        return redirect(message.get_absollute_url())
 
 class HomeView(LoginRequiredMixin, TemplateView):
     # template_name = "tweets/home2.html"

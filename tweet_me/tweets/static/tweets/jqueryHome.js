@@ -79,7 +79,7 @@ $(document).ready(function(){
         var tweetContent = tweetValue.text
         var tweetUser = tweetValue.creator.username
         var tweetUserUrl = "accounts/user_detail/" + tweetValue.creator.id + "/"
-        var formattedHtml = "<div class='media'><div class='media-body'><li>" + tweetUser + " | " + timesince + " | " + " | " + dateDisplay + " | " + tweetContent + "</div></div></li>"
+        var formattedHtml = "<div class='media'><div class='media-body'><li>" + tweetUser + " | " + timesince + " | " + " | " + dateDisplay + " | " + tweetContent + "<br>" + "<a href='/detail/" + tweetValue.id + "'>VIEW</a>" + "</div></div></li>"
 
         if(preprend == true ){ 
             $(".tweet-container").prepend(formattedHtml)
