@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     # Internal
     "tweets",
     "accounts",
+    "hashtags",
     # External
     "crispy_forms",
     "rest_framework"

@@ -13,7 +13,7 @@ $(document).ready(function(){
     getTweets()
 
     function updateHashLinks(){
-        $(".tweet-container").each(function(data){
+        $(".media-body").each(function(data){
             var hashtagRegex = /(^|\s)#([\w\d-]+)/g
             var newText = $(this).html().replace(hashtagRegex, "$1<a href='/tags/$2/'>#$2</a>" )
             $(this).html(newText)
@@ -79,7 +79,7 @@ $(document).ready(function(){
         var tweetContent = tweetValue.text
         var tweetUser = tweetValue.creator.username
         var tweetUserUrl = "accounts/user_detail/" + tweetValue.creator.id + "/"
-        var formattedHtml = "<li>" + tweetUser + " | " + timesince + " | " + " | " + dateDisplay + " | " + tweetContent + "</li>"
+        var formattedHtml = "<div class='media'><div class='media-body'><li>" + tweetUser + " | " + timesince + " | " + " | " + dateDisplay + " | " + tweetContent + "</div></div></li>"
 
         if(preprend == true ){ 
             $(".tweet-container").prepend(formattedHtml)

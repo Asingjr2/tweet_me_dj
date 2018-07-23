@@ -1,5 +1,6 @@
 from django.urls import path
 
+from hashtags.views import HashTagView
 from . import views
 from .views import (
     HomeView, 
@@ -24,4 +25,5 @@ urlpatterns = [
     path("update/<uuid:pk>", UpdateMessageView.as_view(), name="update"),
     path("delete/<uuid:pk>", DeleteMessageView.as_view(), name="delete"),
     path("list/", ListMessageView.as_view(), name="list"),
+    path("tags/<str:hashtag>/", HashTagView.as_view(), name="hashtag"),
 ]
